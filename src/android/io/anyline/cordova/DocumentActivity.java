@@ -139,7 +139,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 // release the images
                 transformedImage.release();
-                fullFrame.release();
 
 
                 JSONObject jsonResult = new JSONObject();
