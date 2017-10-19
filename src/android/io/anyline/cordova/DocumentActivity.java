@@ -225,7 +225,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 // Note: this is called every time an error occurs in a run, so that might be quite often
                 // An error message should only be presented to the user after some time
 
-                showErrorMessageFor(documentError);
+                //showErrorMessageFor(documentError);
             }
 
             @Override
@@ -238,20 +238,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 // if there is a problem, here is how images could be saved in the error case
                 // this will be a full, not cropped, not transformed image
-                AnylineImage image = documentScanView.getCurrentFullImage();
-
-                if (image != null) {
-                    File outDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "error");
-                    outDir.mkdir();
-                    File outFile = new File(outDir, "" + System.currentTimeMillis() + documentError.name() + ".jpg");
-                    try {
-                        image.save(outFile, 100);
-                        Log.d(TAG, "error image saved to " + outFile.getAbsolutePath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    image.release();
-                }
+                documentScanView.triggerCornerDetection();
             }
 
             @Override
