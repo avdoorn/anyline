@@ -238,7 +238,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 // if there is a problem, here is how images could be saved in the error case
                 // this will be a full, not cropped, not transformed image
-                documentScanView.triggerCornerDetection();
+                documentScanView.triggerPictureCornerDetection();
             }
 
             @Override
