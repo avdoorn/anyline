@@ -203,10 +203,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
             @Override
             public void onTakePictureSuccess() {
-                // this is called after the image has been captured from the camera and is about to be processed
-                progressDialog = ProgressDialog.show(DocumentActivity.this,
-                        getString(getResources().getIdentifier("document_processing_picture", "string", getPackageName())),
-                        true);
 
                 if (errorMessageAnimator != null && errorMessageAnimator.isRunning()) {
 
