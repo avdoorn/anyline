@@ -124,29 +124,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 AnylineImage transformedImage = documentResult.getResult();
-                AnylineImage fullFrame = documentResult.getFullImage();
-
-
-                                // resize display view based on larger side of document, and display document
-                                int widthDP, heightDP;
-                                Bitmap bmpTransformedImage = transformedImage.getBitmap();
-
-                                if (bmpTransformedImage.getHeight() > bmpTransformedImage.getWidth()) {
-                                    widthDP = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 85, getResources().getDisplayMetrics());
-                                    heightDP = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125, getResources().getDisplayMetrics());
-                                    //Add a comment to this line
-
-                                    imageViewResult.getLayoutParams().width = widthDP;
-                                    imageViewResult.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                                } else {
-                                    widthDP = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125, getResources().getDisplayMetrics());
-                                    heightDP = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 85, getResources().getDisplayMetrics());
-
-                                    imageViewResult.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                                    imageViewResult.getLayoutParams().height = heightDP;
-                                }
-
-                                imageViewResult.setImageBitmap(Bitmap.createScaledBitmap(transformedImage.getBitmap(), widthDP, heightDP, false));
+                Bitmap bmpTransformedImage = transformedImage.getBitmap();
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -158,21 +136,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                  * for example
                  *
                  */
-                File outDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ok");
-                outDir.mkdir();
-                // change the file ending to png if you want a png
-                File outFile = new File(outDir, "" + System.currentTimeMillis() + ".jpg");
-                try {
-                    // convert the transformed image into a gray scaled image internally
-                    // transformedImage.getGrayCvMat(false);
-                    // get the transformed image as bitmap
-                    // Bitmap bmp = transformedImage.getBitmap();
-                    // save the image with quality 100 (only used for jpeg, ignored for png)
-                    transformedImage.save(outFile, 100);
-                    showToast(getString(getResources().getIdentifier("document_image_saved_to", "string", getPackageName())) + " " + outFile.getAbsolutePath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
                 // release the images
                 transformedImage.release();
@@ -181,14 +144,11 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 JSONObject jsonResult = new JSONObject();
                 try {
-                    jsonResult.put("imagePath", outFile.getAbsolutePath());
-
-                    jsonResult.put("outline", jsonForOutline(documentResult.getOutline()));
-                    jsonResult.put("confidence", documentResult.getConfidence());
+                    jsonResult.put("imageData", bmpTransformedImage);
 
                 } catch (Exception jsonException) {
                     //should not be possible
-                    Log.e(TAG, "Error while putting image path to json.", jsonException);
+                    Log.e(TAG, "Error while putting image data to json.", jsonException);
                 }
 
                 Boolean cancelOnResult = true;
@@ -231,14 +191,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
             @Override
             public void onPictureProcessingFailure(DocumentScanView.DocumentError documentError) {
 
-                showErrorMessageFor(documentError, true);
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-
-                // if there is a problem, here is how images could be saved in the error case
-                // this will be a full, not cropped, not transformed image
-                documentScanView.triggerPictureCornerDetection();
             }
 
             @Override
@@ -252,7 +204,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
             @Override
             public void onTakePictureSuccess() {
                 // this is called after the image has been captured from the camera and is about to be processed
-                progressDialog = ProgressDialog.show(DocumentActivity.this, getString(getResources().getIdentifier("document_processing_picture_header", "string", getPackageName())),
+                progressDialog = ProgressDialog.show(DocumentActivity.this,
                         getString(getResources().getIdentifier("document_processing_picture", "string", getPackageName())),
                         true);
 
