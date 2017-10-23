@@ -126,10 +126,21 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                     progressDialog.dismiss();
                 }
 
-                AnylineImage transformedImage = documentResult.getResult();
-                AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
-				byte[] byteArray = yuvImage.getData();
-				String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+				try {
+					AnylineImage transformedImage = documentResult.getResult();
+					AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
+					byte[] byteArray = yuvImage.getData();
+					String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+				}
+				catch(Exception e) {
+					try {
+
+						jsonResult.put("imageData", "Error: "+e.getMessage());
+
+					} catch (Exception e) {
+						Log.e(TAG, "Error while putting image data to json.", e);
+					}
+				}
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
