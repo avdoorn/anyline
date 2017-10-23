@@ -126,7 +126,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 AnylineImage transformedImage = documentResult.getResult();
-                Bitmap bitmap = transformedImage.getBitmap();
+                String base64 = transformedImage.getBase64();
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -145,11 +145,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 JSONObject jsonResult = new JSONObject();
                 try {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					String base64String = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
 
-                    jsonResult.put("imageData", base64String);
+                    jsonResult.put("imageData", base64);
 
                 } catch (Exception e) {
                     //should not be possible
