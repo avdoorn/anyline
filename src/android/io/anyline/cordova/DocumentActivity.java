@@ -147,13 +147,15 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 try {
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
 					bmpTransformedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-					byte[] byteArray = byteArrayOutputStream .toByteArray();
+					byte[] byteArray = byteArrayOutputStream.toByteArray();
 					String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
                     jsonResult.put("imageData", encodedImage);
 
                 } catch (Exception jsonException) {
                     //should not be possible
+					
+                    jsonResult.put("imageData", jsonException);
                     Log.e(TAG, "Error while putting image data to json.", jsonException);
                 }
 
