@@ -127,12 +127,11 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 JSONObject jsonResult = new JSONObject();
-				String base64String = new String();
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
 					AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
 					byte[] byteArray = yuvImage.getData();
-					base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+					String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
 					/**
 					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -146,7 +145,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 */
 
 					// release the images
-					transformedImage.release();
+					transformedImage.release(); 
 					
                     jsonResult.put("imageData", base64String);
 				}
