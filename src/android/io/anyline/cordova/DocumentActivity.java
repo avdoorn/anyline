@@ -132,6 +132,20 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
 					byte[] byteArray = yuvImage.getData();
 					String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+					/**
+					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
+					 * keeping them in memory (e.g. setting the full frame to an ImageView)
+					 * will result in a OutOfMemoryError soon. This error is reported in {@link #onTakePictureError
+					 * (Throwable)}
+					 *
+					 * Use a DiskCache http://developer.android.com/training/displaying-bitmaps/cache-bitmap.html#disk-cache
+					 * for example
+					 *
+					 */
+
+					// release the images
+					transformedImage.release();
 				}
 				catch(Exception e) {
 					String exceptionMessage = e.getMessage();
@@ -143,20 +157,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 						Log.e(TAG, "Error while putting image data to json.", je);
 					}
 				}
-
-                /**
-                 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
-                 * keeping them in memory (e.g. setting the full frame to an ImageView)
-                 * will result in a OutOfMemoryError soon. This error is reported in {@link #onTakePictureError
-                 * (Throwable)}
-                 *
-                 * Use a DiskCache http://developer.android.com/training/displaying-bitmaps/cache-bitmap.html#disk-cache
-                 * for example
-                 *
-                 */
-
-                // release the images
-                transformedImage.release();
 
 
                 try {
