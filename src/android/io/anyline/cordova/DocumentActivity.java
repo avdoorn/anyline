@@ -32,6 +32,7 @@ import at.nineyards.anyline.camera.AnylineViewConfig;
 import at.nineyards.anyline.camera.CameraController;
 import at.nineyards.anyline.camera.CameraOpenListener;
 import at.nineyards.anyline.models.AnylineImage;
+import at.nineyards.anyline.models.AnylineYuvImage;
 import at.nineyards.anyline.modules.document.DocumentResultListener;
 import at.nineyards.anyline.modules.document.DocumentResult;
 import at.nineyards.anyline.modules.document.DocumentScanView;
@@ -126,7 +127,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 AnylineImage transformedImage = documentResult.getResult();
-                Bitmap bitmap = transformedImage.getBitmap().copy(Bitmap.Config.ARGB_8888, false);
+                AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -145,9 +146,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
                 JSONObject jsonResult = new JSONObject();
                 try {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					String base64String = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+					String base64String = Base64.encodeToString(yuvImage.getData(), Base64.DEFAULT);
 
                     jsonResult.put("imageData", base64String);
 
