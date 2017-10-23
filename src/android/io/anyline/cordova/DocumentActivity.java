@@ -126,6 +126,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                     progressDialog.dismiss();
                 }
 
+                JSONObject jsonResult = new JSONObject();
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
 					AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
@@ -133,12 +134,13 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
 				}
 				catch(Exception e) {
+					String exceptionMessage = e.getMessage();
 					try {
 
-						jsonResult.put("imageData", "Error: "+e.getMessage());
+						jsonResult.put("imageData", "Error: "+exceptionMessage);
 
-					} catch (Exception e) {
-						Log.e(TAG, "Error while putting image data to json.", e);
+					} catch (Exception je) {
+						Log.e(TAG, "Error while putting image data to json.", je);
 					}
 				}
 
@@ -157,7 +159,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 transformedImage.release();
 
 
-                JSONObject jsonResult = new JSONObject();
                 try {
 
                     jsonResult.put("imageData", base64String);
