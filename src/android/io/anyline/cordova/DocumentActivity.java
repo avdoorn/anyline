@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import org.apache.commons.io;
-
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
@@ -134,20 +132,26 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
-					Bitmap bitmap = transformedImage.getBitmap();
+					String result = new String();
+					transformedImage.save("Test.jpg");
 					
-					//Don't forget the manifest permission to write files
-					final FileOutputStream fos = new FileOutputStream("testImage.jpg"); 
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-					fos.close();
-
-					final InputStream is = new Base64InputStream( new FileInputStream("testImage.jpg") );
-
-					//Now that we have the InputStream, we can read it and put it into the String
-					final StringWriter writer = new StringWriter();
-					IOUtils.copy(is , writer, "Base64");
-					final String base64String = writer.toString();
+					FileInputStream fis = new FileInputStream("Test.jpg");
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
+					byte[] buffer = new byte[1024];
+					int len = 0;
+					while ((len = fis.read(buffer)) >= 0) {
+						base64out.write(buffer, 0, len);
+					}
+					base64out.flush();
+					base64out.close();
+					/*
+					 * Why should we close Base64OutputStream before processing the data:
+					 * http://stackoverflow.com/questions/24798745/android-file-to-base64-using-streaming-sometimes-missed-2-bytes
+					 */
+					result = new String(baos.toByteArray(), "UTF-8");
+					baos.close();
+					fis.close();
 					/**
 					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
 					 * keeping them in memory (e.g. setting the full frame to an ImageView)
@@ -162,7 +166,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					// release the images
 					transformedImage.release(); 
 					
-                    jsonResult.put("imageData", base64String);
+                    jsonResult.put("imageData", result);
 				}
 				catch(Exception e) {
 					String exceptionMessage = e.getMessage();
