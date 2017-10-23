@@ -25,6 +25,8 @@ import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.Base64InputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
