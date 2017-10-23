@@ -126,6 +126,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 AnylineImage transformedImage = documentResult.getResult();
+                Bitmap bitmap = transformedImage.getBitmap().copy(Bitmap.Config.ARGB_8888, false);
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -139,24 +140,27 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                  */
 
                 // release the images
+                transformedImage.release();
 
 
                 JSONObject jsonResult = new JSONObject();
                 try {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					String base64String = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
-                    jsonResult.put("imageData", transformedImage);
+                    jsonResult.put("imageData", base64String);
 
                 } catch (Exception e) {
                     //should not be possible
                 try {
-                    jsonResult.put("imageData", transformedImage);
+                    jsonResult.put("imageData", e.getMessage());
 				}
 				catch(Exception je) {
                     Log.e(TAG, "Error while putting error data to json.", je);
 				}
                     Log.e(TAG, "Error while putting image data to json.", e);
                 }
-                transformedImage.release();
 
                 Boolean cancelOnResult = true;
 
