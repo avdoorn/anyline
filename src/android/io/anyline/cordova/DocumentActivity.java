@@ -149,7 +149,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 					String base64String = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
 
-                    jsonResult.put("imageData", encodedImage);
+                    jsonResult.put("imageData", base64String);
 
                 } catch (Exception e) {
                     //should not be possible
