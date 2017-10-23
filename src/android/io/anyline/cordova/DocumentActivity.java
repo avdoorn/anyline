@@ -126,7 +126,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 AnylineImage transformedImage = documentResult.getResult();
-                Bitmap bmpTransformedImage = transformedImage.getBitmap();
+                Bitmap bitmap = transformedImage.getBitmap();
 
                 /**
                  * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
