@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.util.Base64InputStream;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -23,10 +24,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import org.apache.commons.io;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
-import java.io.Base64InputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
