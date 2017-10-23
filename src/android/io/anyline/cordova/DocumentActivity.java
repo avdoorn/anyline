@@ -152,13 +152,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                     jsonResult.put("imageData", base64String);
 
                 } catch (Exception e) {
-                    //should not be possible
-                try {
-                    jsonResult.put("imageData", e.getMessage());
-				}
-				catch(Exception je) {
-                    Log.e(TAG, "Error while putting error data to json.", je);
-				}
                     Log.e(TAG, "Error while putting image data to json.", e);
                 }
 
