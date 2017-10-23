@@ -23,8 +23,10 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.File;
+import java.io.IOUtils;
 import java.io.IOException;
 import java.util.List;
 
@@ -127,12 +129,23 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 }
 
                 JSONObject jsonResult = new JSONObject();
+				
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
-					AnylineYuvImage yuvImage = transformedImage.getAlYuvImage();
-					byte[] byteArray = yuvImage.getData();
-					String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+					Bitmap bitmap = transformedImage.getBitmap();
+					
+					//Don't forget the manifest permission to write files
+					final FileOutputStream fos = new FileOutputStream("testImage.jpg"); 
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
+					fos.close();
+
+					final InputStream is = new Base64InputStream( new FileInputStream("testImage.jpg") );
+
+					//Now that we have the InputStream, we can read it and put it into the String
+					final StringWriter writer = new StringWriter();
+					IOUtils.copy(is , writer, "Base64");
+					final String base64String = writer.toString();
 					/**
 					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
 					 * keeping them in memory (e.g. setting the full frame to an ImageView)
