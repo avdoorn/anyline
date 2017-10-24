@@ -10,7 +10,7 @@ import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Base64InputStream;
-import android.util.Base64OutputStream
+import android.util.Base64OutputStream;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
