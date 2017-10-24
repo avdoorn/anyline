@@ -133,7 +133,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
 					String result = new String();
-					transformedImage.save("Test.jpg");
+					transformedImage.save("Test.jpg",100);
 					
 					FileInputStream fis = new FileInputStream("Test.jpg");
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
