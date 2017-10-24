@@ -133,9 +133,11 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				try {
 					AnylineImage transformedImage = documentResult.getResult();
 					String result = new String();
-					transformedImage.save("Test.jpg",100);
+					File imageFile = new File("/test.jpg");
+					transformedImage.save(imageFile,100);
 					
-					FileInputStream fis = new FileInputStream("Test.jpg");
+					
+					FileInputStream fis = new FileInputStream(imageFile);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
 					byte[] buffer = new byte[1024];
