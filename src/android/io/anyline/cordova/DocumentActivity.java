@@ -25,6 +25,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.File;
