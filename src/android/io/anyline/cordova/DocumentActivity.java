@@ -112,7 +112,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
             return;
         }
 
-		documentScanView.setMaxDocumentRatioDeviation(1.15);
+		documentScanView.setMaxDocumentRatioDeviation(3.15);
 
 		
         documentScanView.setConfig(new AnylineViewConfig(this, jsonObject));
