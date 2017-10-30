@@ -112,6 +112,9 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
             return;
         }
 
+		documentScanView.setMaxDocumentRatioDeviation(1.15);
+
+		
         documentScanView.setConfig(new AnylineViewConfig(this, jsonObject));
 
         // Optional: Set a ratio you want the documents to be restricted to. default is set to DIN_AX
