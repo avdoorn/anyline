@@ -161,12 +161,13 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					// Apply contrast
 					int contrast = 128;
 					int factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-				
-					for(var i=0;i<result.length;i+=4)
+					int i=0;
+					while(i<result.length)
 					{
 						result[i] = factor * (result[i] - 128) + 128;
 						result[i+1] = factor * (result[i+1] - 128) + 128;
 						result[i+2] = factor * (result[i+2] - 128) + 128;
+						i+=4;
 					}
 					
 					baos.close();
