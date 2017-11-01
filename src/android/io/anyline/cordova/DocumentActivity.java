@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.ByteArray;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.File;
@@ -158,7 +157,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 * http://stackoverflow.com/questions/24798745/android-file-to-base64-using-streaming-sometimes-missed-2-bytes
 					 */
 					 
-					ByteArray data = baos.toByteArray();
+					byte[] data = baos.toByteArray();
 					
 					
 					// Apply contrast
