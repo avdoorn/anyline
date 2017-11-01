@@ -6,7 +6,6 @@ repositories{
 dependencies {
   	compile 'com.google.android.gms:play-services-vision:8.4.0'
     compile 'io.anyline:anylinesdk:3.17.0@aar'
-	compile 'org.apache.commons.codec'
 }
 
 android {
