@@ -157,6 +157,18 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 * http://stackoverflow.com/questions/24798745/android-file-to-base64-using-streaming-sometimes-missed-2-bytes
 					 */
 					result = new String(baos.toByteArray(), "UTF-8");
+					
+					// Apply contrast
+					int contrast = 128;
+					int factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+				
+					for(var i=0;i<result.length;i+=4)
+					{
+						result[i] = factor * (result[i] - 128) + 128;
+						result[i+1] = factor * (result[i+1] - 128) + 128;
+						result[i+2] = factor * (result[i+2] - 128) + 128;
+					}
+					
 					baos.close();
 					fis.close();
 					/**
