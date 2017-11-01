@@ -161,8 +161,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					
 					
 					// Apply contrast
-					byte contrast = 128;
-					byte factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+					byte contrast = (byte)28;
+					byte factor = (byte)(259 * (contrast + 255)) / (255 * (259 - contrast));
 					int dataCounter = 0;
 					int dataLength = data.length;
 					while(dataCounter<dataLength)
