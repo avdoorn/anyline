@@ -25,11 +25,12 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
+import java.io.ByteArray;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -156,21 +157,25 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 * Why should we close Base64OutputStream before processing the data:
 					 * http://stackoverflow.com/questions/24798745/android-file-to-base64-using-streaming-sometimes-missed-2-bytes
 					 */
-					result = new String(baos.toByteArray(), "UTF-8");
+					 
+					ByteArray data = baos.toByteArray();
+					
 					
 					// Apply contrast
 					int contrast = 128;
 					int factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
 					int i=0;
-					while(i<result.length())
+					while(i<data.length())
 					{
-						result[i] = factor * (result[i] - 128) + 128;
-						result[i+1] = factor * (result[i+1] - 128) + 128;
-						result[i+2] = factor * (result[i+2] - 128) + 128;
+						data[i] = factor * (data[i] - 128) + 128;
+						data[i+1] = factor * (data[i+1] - 128) + 128;
+						data[i+2] = factor * (data[i+2] - 128) + 128;
 						i+=4;
 					}
 					
-					baos.close();
+					result = new String(data, "UTF-8");
+					
+					baos.close(); 
 					fis.close();
 					/**
 					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
