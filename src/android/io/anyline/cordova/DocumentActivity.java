@@ -168,9 +168,9 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					int dataLength = data.length;
 					while(dataCounter<dataLength)
 					{
-						data[dataCounter] = (byte)byteFactor * ((byte)data[dataCounter] - (byte)128) + (byte)128;
-						data[dataCounter+1] = (byte)byteFactor * (byte)(data[dataCounter+1] - (byte)128) + (byte)128;
-						data[dataCounter+2] = (byte)byteFactor * ((byte)data[dataCounter+2] - (byte)128) + (byte)128;
+						data[dataCounter] = (byte)(byteFactor * (data[dataCounter] - 128) + 128);
+						data[dataCounter+1] = (byte)(byteFactor * (data[dataCounter+1] - 128) + 128);
+						data[dataCounter+2] = (byte)(byteFactor * (data[dataCounter+2] - 128) + 128);
 						dataCounter+=4;
 					}
 					
