@@ -231,7 +231,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 						fullFrame.save(imageFile, quality);
 						jsonResult.put("fullImagePath", imageFile.getAbsolutePath());
 					}
-					 - FileInputStream fis = new FileInputStream(imageFile);
+					FileInputStream fis = new FileInputStream(imageFile);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
 					byte[]buffer = new byte[1024];
