@@ -285,7 +285,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					//jsonResult.put("confidence", documentResult.getConfidence());
 					jsonResult.put("imageData", result);
 				} catch (IOException e) {
-					jsonResult.put("imageData", "Error: " + e.getMessage());
+					String exceptionMessage = e.getMessage();
+					jsonResult.put("imageData", "Error: " + exceptionMessage);
 				}
 				catch (JSONException jsonException) {
 					//should not be possible
