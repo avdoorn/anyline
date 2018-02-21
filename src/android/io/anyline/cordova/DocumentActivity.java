@@ -256,16 +256,16 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					int dataCounter = 0;
 					int dataLength = data.length;
 					while (dataCounter < dataLength) {
-						inbetween = factor * (data[dataCounter]128) + 128;
+						inbetween = factor * (data[dataCounter] - 128) + 128;
 						data[dataCounter] = (byte)inbetween;
-						inbetween = factor * (data[dataCounter + 1]128) + 128;
+						inbetween = factor * (data[dataCounter + 1] - 128) + 128;
 						data[dataCounter + 1] = (byte)inbetween;
-						inbetween = factor * (data[dataCounter + 2]128) + 128;
+						inbetween = factor * (data[dataCounter + 2] - 128) + 128;
 						data[dataCounter + 2] = (byte)inbetween;
 						dataCounter += 4;
 					}
 
-					result = new String(data, "UTF8");
+					result = new String(data, "UTF-8");
 
 					baos.close();
 					fis.close();
@@ -281,9 +281,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 */
 
 					// Put outline and conficence to result
-					jsonResult.put("outline", jsonForOutline(documentResult.getOutline()));
-					jsonResult.put("confidence", documentResult.getConfidence());
-					transformedImage.release();
+					//jsonResult.put("outline", jsonForOutline(documentResult.getOutline()));
+					//jsonResult.put("confidence", documentResult.getConfidence());
 					jsonResult.put("imageData", result);
 				} catch (IOException e) {
 					jsonResult.put("imageData", "Error: " + exceptionMessage);
@@ -294,6 +293,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				}
 
 				// release the images
+				transformedImage.release();
 				fullFrame.release();
 
 				Boolean cancelOnResult = true;
