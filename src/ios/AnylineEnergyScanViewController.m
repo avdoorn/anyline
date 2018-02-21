@@ -19,49 +19,62 @@
         
         NSError *error = nil;
         [energyModuleView setupWithLicenseKey:self.key delegate:self error:&error];
-        //        if(!success) {
-        //            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Setup failed:" message:error.debugDescription delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        //            [alert show];
-        //        }
-        
-        energyModuleView.scanMode = self.scanMode;
-        energyModuleView.currentConfiguration = self.conf;
-        
+
+        [energyModuleView setScanMode:self.scanMode error:nil];
+
         if (self.nativeBarcodeEnabled) {
-            energyModuleView.videoView.barcodeDelegate = self;
+            energyModuleView.captureDeviceManager.barcodeDelegate = self;
         }
-        
+
+        // Set Serial Number specific configurations
+        // Set Validation Regex
+        if (self.serialValRegex) {
+            NSLog(@"ValidationRegex %@", self.serialValRegex);
+            energyModuleView.serialNumberValidationRegex = self.serialValRegex;
+        }
+        // Set Whitelist
+        if (self.serialWhitelist) {
+            NSLog(@"Whitelist %@", self.serialWhitelist);
+            energyModuleView.serialNumberCharWhitelist = self.serialWhitelist;
+        }
+
+        energyModuleView.currentConfiguration = self.conf;
         self.moduleView = energyModuleView;
-        
+
         [self.view addSubview:self.moduleView];
-        
         [self.view sendSubviewToBack:self.moduleView];
-        
-        self.segment = [[UISegmentedControl alloc] initWithItems:self.cordovaConfig.segmentTitles];
-        
-        self.segment.tintColor = self.cordovaConfig.segmentTintColor;
-        self.segment.hidden = YES;
-        
-        NSInteger index = [self.cordovaConfig.segmentModes indexOfObject:[self stringFromScanMode:self.scanMode]];
-        [self.segment setSelectedSegmentIndex:index];
-        
-        [self.segment addTarget:self action:@selector(segmentChange:) forControlEvents:UIControlEventValueChanged];
-        
-        [self.view addSubview:self.segment];
-        
+
+        if(self.cordovaConfig.segmentModes){
+
+            self.segment = [[UISegmentedControl alloc] initWithItems:self.cordovaConfig.segmentTitles];
+
+            self.segment.tintColor = self.cordovaConfig.segmentTintColor;
+            self.segment.hidden = YES;
+
+            NSInteger index = [self.cordovaConfig.segmentModes indexOfObject:[self stringFromScanMode:self.scanMode]];
+            [self.segment setSelectedSegmentIndex:index];
+
+            [self.segment addTarget:self action:@selector(segmentChange:) forControlEvents:UIControlEventValueChanged];
+
+            [self.view addSubview:self.segment];
+        }
+
         self.detectedBarcodes = [NSMutableArray array];
+
     });
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.segment.frame = CGRectMake(self.moduleView.cutoutRect.origin.x + self.cordovaConfig.segmentXPositionOffset/2,
-                                    self.moduleView.cutoutRect.origin.y + self.cordovaConfig.segmentYPositionOffset/2,
-                                    self.view.frame.size.width - 2*(self.moduleView.cutoutRect.origin.x + self.cordovaConfig.segmentXPositionOffset/2),
-                                    self.segment.frame.size.height);
-    self.segment.hidden = NO;
-    
+
+    if(self.cordovaConfig.segmentModes){
+        self.segment.frame = CGRectMake(self.moduleView.cutoutRect.origin.x + self.cordovaConfig.segmentXPositionOffset/2,
+                                        self.moduleView.cutoutRect.origin.y + self.cordovaConfig.segmentYPositionOffset/2,
+                                        self.view.frame.size.width - 2*(self.moduleView.cutoutRect.origin.x + self.cordovaConfig.segmentXPositionOffset/2),
+                                        self.segment.frame.size.height);
+        self.segment.hidden = NO;
+    }
+
 }
 
 #pragma mark - AnylineEnergyModuleDelegate method
@@ -71,11 +84,11 @@
      To present the scanned result to the user we use a custom view controller.
      */
     self.scannedLabel.text = (NSString *)scanResult.result;
-    
-    
-    
+
+
+
     NSMutableDictionary *dictResult = [NSMutableDictionary dictionaryWithCapacity:4];
-    
+
     switch (scanResult.scanMode) {
         case ALDigitalMeter:
             [dictResult setObject:@"Digital Meter" forKey:@"meterType"];
@@ -95,27 +108,27 @@
             [dictResult setObject:@"Electric Meter" forKey:@"meterType"];
             break;
     }
-    
+
     [dictResult setObject:[self stringFromScanMode:scanResult.scanMode] forKey:@"scanMode"];
-    
+
     [dictResult setObject:scanResult.result forKey:@"reading"];
-    
+
     NSString *imagePath = [self saveImageToFileSystem:scanResult.image];
-    
+
     [dictResult setValue:imagePath forKey:@"imagePath"];
-    
+
     NSString *fullImagePath = [self saveImageToFileSystem:scanResult.fullImage];
-    
+
     [dictResult setValue:fullImagePath forKey:@"fullImagePath"];
-    
+
     [dictResult setObject:self.detectedBarcodes forKey:@"detectedBarcodes"];
-    
+
     [dictResult setValue:@(scanResult.confidence) forKey:@"confidence"];
     [dictResult setValue:[self stringForOutline:scanResult.outline] forKey:@"outline"];
-    
-    
+
+
     [self.delegate anylineBaseScanViewController:self didScan:dictResult continueScanning:!self.moduleView.cancelOnResult];
-    
+
     if (self.moduleView.cancelOnResult) {
         [self dismissViewControllerAnimated:YES completion:NULL];
     }
@@ -124,20 +137,21 @@
 
 #pragma mark - AnylineNativeBarcodeDelegate
 
-- (void)anylineVideoView:(AnylineVideoView *)videoView
-    didFindBarcodeResult:(NSString *)scanResult
-                    type:(NSString *)barcodeType {
+- (void)anylineCaptureDeviceManager:(ALCaptureDeviceManager *)captureDeviceManager
+               didFindBarcodeResult:(NSString *)scanResult
+                               type:(NSString *)barcodeType {
+
     for (NSMutableDictionary<NSString *, NSString *> *barcode in self.detectedBarcodes) {
         if ([[barcode objectForKey:@"value"] isEqualToString:scanResult]) {
             return;
         }
     }
-    
+
     NSMutableDictionary *barcode = [NSMutableDictionary dictionaryWithCapacity:2];
-    
+
     barcode[@"value"] = scanResult;
     barcode[@"format"] = [self barcodeFormatForNativeString:barcodeType];
-    
+
     [self.detectedBarcodes addObject:barcode];
 }
 
@@ -146,8 +160,8 @@
 - (IBAction)segmentChange:(id)sender {
     NSString *modeString = self.cordovaConfig.segmentModes[((UISegmentedControl *)sender).selectedSegmentIndex];
     ALScanMode scanMode = [self scanModeFromString:modeString];
-    ((AnylineEnergyModuleView *)self.moduleView).scanMode = scanMode;
-    
+
+    [(AnylineEnergyModuleView *)self.moduleView setScanMode:scanMode error:nil];
     self.moduleView.currentConfiguration = self.conf;
 }
 
@@ -205,12 +219,11 @@
                       @"ANALOG_METER" : @(ALAnalogMeter),
                       @"BARCODE" : @(ALBarcode),
                       @"SERIAL_NUMBER" : @(ALSerialNumber),
-                      
+                      @"DOT_MATRIX_METER" : @(ALDotMatrixMeter),
                       @"DIGITAL_METER" : @(ALDigitalMeter),
                       @"HEAT_METER_4" : @(ALHeatMeter4),
                       @"HEAT_METER_5" : @(ALHeatMeter5),
                       @"HEAT_METER_6" : @(ALHeatMeter6),
-                      
                       };
     });
     

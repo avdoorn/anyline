@@ -16,9 +16,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import at.nineyards.anyline.camera.CameraController;
@@ -79,7 +81,24 @@ public abstract class AnylineBaseActivity extends Activity
         finishWithError(Resources.getString(this, "error_accessing_camera") + "\n" + e.getLocalizedMessage());
     }
 
+    protected ArrayList getArrayListFromJsonArray(JSONArray jsonObject) {
+        ArrayList<Double> listdata = new ArrayList<Double>();
+        JSONArray jArray = jsonObject;
+        try {
+            for (int i = 0; i < jArray.length(); i++) {
+                listdata.add(jArray.getDouble(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return listdata;
+    }
+
     protected String jsonForOutline(List<PointF> pointList) {
+
+        if (pointList == null || pointList.size() <= 0) {
+            return "No Outline";
+        }
 
         JSONObject upLeft = new JSONObject();
         JSONObject upRight = new JSONObject();

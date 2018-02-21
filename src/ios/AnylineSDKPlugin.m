@@ -98,6 +98,10 @@
     [self processMeterCommand:command withScanMode:ALSerialNumber];
 }
 
+- (void)DOT_MATRIX_METER:(CDVInvokedUrlCommand *)command {
+    [self processMeterCommand:command withScanMode:ALDotMatrixMeter];
+}
+
 - (void)MRZ:(CDVInvokedUrlCommand *)command {
     [self processCommandArguments:command];
 
@@ -138,6 +142,37 @@
     [self.commandDelegate runInBackground:^{
         AnylineDocumentScanViewController *docScanViewController = [[AnylineDocumentScanViewController alloc] initWithKey:self.appKey configuration:self.conf cordovaConfiguration:self.cordovaUIConf delegate:self];
 
+        NSDictionary *options = [command.arguments objectAtIndex:1];
+        if ([options valueForKey:@"document"]) {
+            NSDictionary *docConfig = [options valueForKey:@"document"];
+
+            // Check for Document quality Config and set it
+            if([docConfig valueForKey:@"quality"]){
+                docScanViewController.quality = [[docConfig valueForKey:@"quality"] integerValue];
+            } else {
+                docScanViewController.quality = 100;
+            }
+
+            // Check for Document Max Output Config and set it
+            if([docConfig valueForKey:@"maxOutputResoultion"]){
+                NSDictionary *maxOutputResoultionConfig = [docConfig valueForKey:@"maxOutputResoultion"];
+                if([maxOutputResoultionConfig valueForKey:@"width"] && [maxOutputResoultionConfig valueForKey:@"height"]){
+                    docScanViewController.maxOutputResolution = CGSizeMake([[maxOutputResoultionConfig valueForKey:@"width"] doubleValue], [[maxOutputResoultionConfig valueForKey:@"height"] doubleValue]);
+                }
+            }
+
+            // Check for Document Ratio Config and set it
+            if([docConfig valueForKey:@"ratio"]){
+                NSDictionary *ratioConfig = [docConfig valueForKey:@"ratio"];
+                if([ratioConfig valueForKey:@"ratios"]){
+                    docScanViewController.ratios = [ratioConfig valueForKey:@"ratios"];
+                }
+                if([ratioConfig valueForKey:@"deviation"]){
+                    docScanViewController.ratioDeviation = [[ratioConfig valueForKey:@"deviation"] doubleValue];
+                }
+            }
+        }
+
         self.baseScanViewController = docScanViewController;
 
         [self presentViewController];
@@ -164,15 +199,33 @@
 
 - (void)processMeterCommand:(CDVInvokedUrlCommand *)command withScanMode:(ALScanMode)scanMode {
     [self processCommandArguments:command];
-    
+
     BOOL nativeBarcodeScanning = NO;
-    
+
     if (command.arguments.count == 3) {
         nativeBarcodeScanning = [[command.arguments[2] objectForKey:@"nativeBarcodeEnabled"] boolValue];
     }
-    
+
     [self.commandDelegate runInBackground:^{
         AnylineEnergyScanViewController *energyScanViewController = [[AnylineEnergyScanViewController alloc] initWithKey:self.appKey configuration:self.conf cordovaConfiguration:self.cordovaUIConf delegate:self];
+
+
+        // Set SerialNumber Configuration
+        NSDictionary *options = [command.arguments objectAtIndex:1];
+        if ([options valueForKey:@"serialNumber"]) {
+            NSDictionary *serNumConf = [options valueForKey:@"serialNumber"];
+
+            // Check for Serial Number Whitelist and set it
+            if([serNumConf valueForKey:@"numberCharWhitelist"]){
+                energyScanViewController.serialWhitelist = [serNumConf objectForKey:@"numberCharWhitelist"];
+            }
+
+            // Check for Serial Number ValidationRegex and set it
+            if([serNumConf valueForKey:@"validationRegex"]){
+                energyScanViewController.serialValRegex = [serNumConf objectForKey:@"validationRegex"];
+            }
+        }
+
         
         energyScanViewController.scanMode = scanMode;
         energyScanViewController.nativeBarcodeEnabled = nativeBarcodeScanning;

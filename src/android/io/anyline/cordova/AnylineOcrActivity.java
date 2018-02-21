@@ -67,7 +67,7 @@ public class AnylineOcrActivity extends AnylineBaseActivity {
                     ocrConfig.setCustomCmdFile("www/" + ocrConfig.getCustomCmdFile());
                 }
             }
-    
+
             JSONArray tesseractArray = json.optJSONArray("traineddataFiles");
             if (tesseractArray != null) {
                 String[] languages = new String[tesseractArray.length()];
@@ -85,10 +85,13 @@ public class AnylineOcrActivity extends AnylineBaseActivity {
                         //maybe it should just fail here, case propably not useful
                         languages[i] = traineddataFilePath.substring(lastFileSeparatorIndex + 1);
                     }
+                    Log.d("languages", languages[i]);
                     AssetUtil.copyAssetFileWithoutPath(this, "www/" + traineddataFilePath, dirToCopyTo, false);
                     Log.v(TAG, "Copy traineddata duration: " + (System.currentTimeMillis() - start));
                 }
                 ocrConfig.setTesseractLanguages(languages);
+            } else {
+                Log.d(TAG, "No Training Data");
             }
 
             drawTextOutline = json.optBoolean("drawTextOutline", true);
@@ -123,28 +126,27 @@ public class AnylineOcrActivity extends AnylineBaseActivity {
     }
 
 
-
     private void setDebugListener() {
         anylineOcrScanView.setDebugListener(new AnylineDebugListener() {
             @Override
             public void onDebug(String name, Object value) {
 
-                if(name.equals(AnylineDebugListener.BRIGHTNESS_VARIABLE_NAME) && value.getClass().equals
-                        (AnylineDebugListener.BRIGHTNESS_VARIABLE_CLASS)){
+                if (name.equals(AnylineDebugListener.BRIGHTNESS_VARIABLE_NAME) && value.getClass().equals
+                        (AnylineDebugListener.BRIGHTNESS_VARIABLE_CLASS)) {
                     Double val = AnylineDebugListener.BRIGHTNESS_VARIABLE_CLASS.cast(value);
 
-                    Log.d(TAG, name +": " +val.doubleValue());
+                    Log.d(TAG, name + ": " + val.doubleValue());
                 }
-                if(name.equals(CONTOURS_VARIABLE_NAME) && value.getClass().equals(CONTOURS_VARIABLE_CLASS)){
+                if (name.equals(CONTOURS_VARIABLE_NAME) && value.getClass().equals(CONTOURS_VARIABLE_CLASS)) {
                     Vector_Contour contour = CONTOURS_VARIABLE_CLASS.cast(value);
-                    Log.d(TAG, name +": " +contour.toString());
+                    Log.d(TAG, name + ": " + contour.toString());
                 }
 
             }
 
             @Override
             public void onRunSkipped(RunFailure runFailure) {
-                Log.w(TAG, "run skipped: " +runFailure);
+                Log.w(TAG, "run skipped: " + runFailure);
             }
         });
     }
@@ -163,7 +165,7 @@ public class AnylineOcrActivity extends AnylineBaseActivity {
                 try {
                     jsonResult.put("text", result.getResult().trim());
 
-                    if(result.getOutline() != null){
+                    if (result.getOutline() != null) {
                         jsonResult.put("outline", jsonForOutline(result.getOutline()));
                     } else {
                         jsonResult.put("outline", false);

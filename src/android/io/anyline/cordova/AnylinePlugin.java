@@ -161,14 +161,20 @@ public class AnylinePlugin extends CordovaPlugin implements ResultReporter.OnRes
             case "SERIAL_NUMBER":
                 scanEnergy(args, EnergyScanView.ScanMode.SERIAL_NUMBER);
                 break;
+             case "DOT_MATRIX_METER":
+                scanEnergy(args, EnergyScanView.ScanMode.DOT_MATRIX_METER);
+                break;
             case "ANYLINE_OCR":
                 scan(AnylineOcrActivity.class, REQUEST_ANYLINE_OCR, args);
                 break;
             case "LICENSE_PLATE":
                 scan(LicensePlateActivity.class, REQUEST_LICENSE_PLATE, args);
                 break;
+            case "DRIVING_LICENSE":
+                scan(AnylineOcrActivity.class, REQUEST_ANYLINE_OCR, args);
+                break;
             default:
-                mCallbackContext.error(Resources.getString(cordova.getActivity(),
+                this.mCallbackContext.error(Resources.getString(cordova.getActivity(),
                         "error_unkown_scan_mode") + " " + action);
         }
     }
@@ -210,7 +216,7 @@ public class AnylinePlugin extends CordovaPlugin implements ResultReporter.OnRes
 
 
         } catch (JSONException e) {
-            mCallbackContext.error(Resources.getString(cordova.getActivity(), "error_invalid_json_data"));
+            this.mCallbackContext.error(Resources.getString(cordova.getActivity(), "error_invalid_json_data"));
             return;
         }
         ResultReporter.setListener(this);
@@ -223,10 +229,10 @@ public class AnylinePlugin extends CordovaPlugin implements ResultReporter.OnRes
         if (resultCode == RESULT_OK) {
             //nothing todo, handeled with ResultReporter
         } else if (resultCode == RESULT_CANCELED) {
-            mCallbackContext.error("Canceled");
+            this.mCallbackContext.error("Canceled");
 
         } else if (resultCode == RESULT_ERROR) {
-            mCallbackContext.error(data.getStringExtra(EXTRA_ERROR_MESSAGE));
+            this.mCallbackContext.error(data.getStringExtra(EXTRA_ERROR_MESSAGE));
         }
     }
 
@@ -245,6 +251,6 @@ public class AnylinePlugin extends CordovaPlugin implements ResultReporter.OnRes
             pluginResult.setKeepCallback(true);
         }
 
-        mCallbackContext.sendPluginResult(pluginResult);
+        this.mCallbackContext.sendPluginResult(pluginResult);
     }
 }

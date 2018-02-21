@@ -26,15 +26,21 @@
         AnylineDocumentModuleView *docModuleView = [[AnylineDocumentModuleView alloc] initWithFrame:self.view.bounds];
         docModuleView.currentConfiguration = self.conf;
         
-        
+        // Set Document Ratios and deviation
+        [docModuleView setDocumentRatios:self.ratios];
+        docModuleView.maxDocumentRatioDeviation = [NSNumber numberWithDouble:self.ratioDeviation];
+
+        // Set max Output Resolution
+        if(!CGSizeEqualToSize(CGSizeZero, self.maxOutputResolution)){
+            docModuleView.maxOutputResolution = self.maxOutputResolution;
+        }
+
         NSError *error = nil;
         BOOL success = [docModuleView setupWithLicenseKey:self.key delegate:self error:&error];
-        
-        
+
         self.moduleView = docModuleView;
         
         [self.view addSubview:self.moduleView];
-        
         [self.view sendSubviewToBack:self.moduleView];
         
         // This view notifies the user of any problems that occur while he is scanning
@@ -46,14 +52,6 @@
     });
 }
 
-//- (void)viewDidLayoutSubviews {
-//    [self updateWarningPosition:
-//     self.moduleView.cutoutRect.origin.y +
-//     self.moduleView.cutoutRect.size.height +
-//     self.moduleView.frame.origin.y +
-//     90];
-//}
-
 #pragma mark - AnylineDocumentModuleDelegate method
 
 - (void)anylineDocumentModuleView:(AnylineDocumentModuleView *)anylineDocumentModuleView
@@ -63,9 +61,15 @@
     
     NSMutableDictionary *dictResult = [NSMutableDictionary dictionaryWithCapacity:4];
     
-    NSString *imagePath = [self saveImageToFileSystem:transformedImage];
-    
+    CGFloat dividedCompRate = (CGFloat) self.quality/100;
+    NSString *imagePath = [self saveImageToFileSystem:transformedImage compressionQuality:dividedCompRate];
+    NSString *fullImagePath = [self saveImageToFileSystem:fullFrame compressionQuality:dividedCompRate];
+    NSString *outline = [self stringForOutline:corners];
+
+
     [dictResult setValue:imagePath forKey:@"imagePath"];
+    [dictResult setValue:fullImagePath forKey:@"fullImagePath"];
+    [dictResult setValue:outline forKey:@"outline"];
     
 
     [self.delegate anylineBaseScanViewController:self didScan:dictResult continueScanning:!self.moduleView.cancelOnResult];
