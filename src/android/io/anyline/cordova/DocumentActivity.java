@@ -225,12 +225,12 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					jsonResult.put("imagePath", imageFile.getAbsolutePath());
 
 					// Save the Full Frame Image
-					if (fullFrame != null) {
-						imageFile = TempFileUtil.createTempFileCheckCache(DocumentActivity.this,
-								UUID.randomUUID().toString(), ".jpg");
-						fullFrame.save(imageFile, quality);
-						jsonResult.put("fullImagePath", imageFile.getAbsolutePath());
-					}
+					//if (fullFrame != null) {
+					//	imageFile = TempFileUtil.createTempFileCheckCache(DocumentActivity.this,
+					//			UUID.randomUUID().toString(), ".jpg");
+					//	fullFrame.save(imageFile, quality);
+					//	jsonResult.put("fullImagePath", imageFile.getAbsolutePath());
+					//}
 					FileInputStream fis = new FileInputStream(imageFile);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
@@ -285,7 +285,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					//jsonResult.put("confidence", documentResult.getConfidence());
 					jsonResult.put("imageData", result);
 				} catch (IOException e) {
-					jsonResult.put("imageData", "Error: " + exceptionMessage);
+					jsonResult.put("imageData", "Error: " + e.getMessage());
 				}
 				catch (JSONException jsonException) {
 					//should not be possible
