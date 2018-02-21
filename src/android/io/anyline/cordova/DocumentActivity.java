@@ -284,13 +284,14 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					//jsonResult.put("outline", jsonForOutline(documentResult.getOutline()));
 					//jsonResult.put("confidence", documentResult.getConfidence());
 					jsonResult.put("imageData", result);
-				} catch (IOException e) {
+				} 	catch(Exception e) {
 					String exceptionMessage = e.getMessage();
-					jsonResult.put("imageData", "Error: " + exceptionMessage);
-				}
-				catch (JSONException jsonException) {
-					//should not be possible
-					Log.e(TAG, "Error while putting image path to json.", jsonException);
+					try {
+						jsonResult.put("imageData", "Error: "+exceptionMessage);
+
+					} catch (Exception je) {
+						Log.e(TAG, "Error while putting image data to json.", je);
+					}
 				}
 
 				// release the images
