@@ -21,6 +21,7 @@ import android.hardware.SensorManager.DynamicSensorCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,9 +38,11 @@ public abstract class AnylineBaseActivity extends Activity
 
     private static final String TAG = AnylineBaseActivity.class.getSimpleName();
     
+	private Toast notificationToast;
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private float lightValue;
+    private String lightValueString;
     
     protected String licenseKey;
     protected String configJson;
@@ -98,7 +101,8 @@ public abstract class AnylineBaseActivity extends Activity
     public void onCameraOpened(CameraController cameraController, int width, int height) {
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
         if(lightValue < 500000) {
-            Log.d(TAG, "LightSensor value: " + lightValue);
+            lightValueString = "LightSensor value: " + lightValue;
+            showToast(errorMessage);
         }
     }
 
@@ -134,6 +138,15 @@ public abstract class AnylineBaseActivity extends Activity
         return listdata;
     }
 
+    private void showToast(String text) {
+		try {
+			notificationToast.setText(text);
+		} catch (Exception e) {
+			notificationToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+		}
+		notificationToast.show();
+	}
+    
     protected String jsonForOutline(List<PointF> pointList) {
 
         if (pointList == null || pointList.size() <= 0) {
