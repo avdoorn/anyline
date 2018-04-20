@@ -34,14 +34,13 @@ import at.nineyards.anyline.camera.CameraController;
 import at.nineyards.anyline.camera.CameraOpenListener;
 
 public abstract class AnylineBaseActivity extends Activity
-        implements CameraOpenListener, Thread.UncaughtExceptionHandler, SensorEventListener {
+        implements CameraOpenListener, Thread.UncaughtExceptionHandler, SensorEventListener, FlashControl {
 
     private static final String TAG = AnylineBaseActivity.class.getSimpleName();
     
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private float lightValue;
-    private FlashControl flashControl;
     
     protected String licenseKey;
     protected String configJson;
@@ -99,10 +98,10 @@ public abstract class AnylineBaseActivity extends Activity
     @Override
     public void onCameraOpened(CameraController cameraController, int width, int height) {
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
-        flashControl.setCameraController(cameraController);
         if(lightValue < 50) {
-            flashControl.setAutoModeEnabled(true);
-            flashControl.setFlashOnIfAuto(true);
+            setCameraController(cameraController);
+            setAutoModeEnabled(true);
+            setFlashOnIfAuto(true);
         }
     }
 
