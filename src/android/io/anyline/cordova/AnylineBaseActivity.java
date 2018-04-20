@@ -10,6 +10,7 @@ package io.anyline.cordova;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.Context;
 import android.hardware.Camera;
 import android.graphics.PointF;
 import android.hardware.Sensor;
