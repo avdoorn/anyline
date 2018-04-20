@@ -102,7 +102,7 @@ public abstract class AnylineBaseActivity extends Activity
         flashControl.setCameraController(cameraController);
         if(lightValue < 50) {
             flashControl.setAutoModeEnabled(true);
-            flashControl.SetFlashOnifAuto(true);
+            flashControl.setFlashOnIfAuto(true);
         }
     }
 
