@@ -102,7 +102,7 @@ public abstract class AnylineBaseActivity extends Activity
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
         if(lightValue < 500000) {
             lightValueString = "LightSensor value: " + lightValue;
-            showToast(errorMessage);
+            showToast(lightValueString);
         }
     }
 
