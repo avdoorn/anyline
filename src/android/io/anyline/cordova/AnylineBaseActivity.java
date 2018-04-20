@@ -62,7 +62,7 @@ public abstract class AnylineBaseActivity extends Activity
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
-        lightvalue = event.values[0];
+        lightValue = event.values[0];
         // Do something with this sensor data.
     }
     
