@@ -101,7 +101,7 @@ public abstract class AnylineBaseActivity extends Activity
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
         flashControl.setCameraController(cameraController);
         if(lightValue < 50) {
-            flashControl.setAutoModeEnabled(true)
+            flashControl.setAutoModeEnabled(true);
             flashControl.SetFlashOnifAuto(true);
         }
     }
