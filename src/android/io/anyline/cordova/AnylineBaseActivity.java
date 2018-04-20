@@ -13,9 +13,15 @@ import android.content.Intent;
 import android.content.Context;
 import android.hardware.Camera;
 import android.graphics.PointF;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.hardware.SensorManager.DynamicSensorCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +34,15 @@ import at.nineyards.anyline.camera.CameraController;
 import at.nineyards.anyline.camera.CameraOpenListener;
 
 public abstract class AnylineBaseActivity extends Activity
-        implements CameraOpenListener, Thread.UncaughtExceptionHandler {
+        implements CameraOpenListener, Thread.UncaughtExceptionHandler, SensorEventListener {
 
     private static final String TAG = AnylineBaseActivity.class.getSimpleName();
-        
+    
+	private Toast notificationToast;
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private float lightValue;
+    
     protected String licenseKey;
     protected String configJson;
 
@@ -40,11 +51,22 @@ public abstract class AnylineBaseActivity extends Activity
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         licenseKey = getIntent().getExtras().getString(AnylinePlugin.EXTRA_LICENSE_KEY, "");
         configJson = getIntent().getExtras().getString(AnylinePlugin.EXTRA_CONFIG_JSON, "");
     }
 
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+    }
 
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        lightValue = event.values[0];
+        // Do something with this sensor data.
+    }
     
     /**
      * Always set this like this after the initAnyline: <br/>
@@ -77,6 +99,9 @@ public abstract class AnylineBaseActivity extends Activity
     @Override
     public void onCameraOpened(CameraController cameraController, int width, int height) {
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
+        if(lightValue < 50) {
+            cameraController.setFlashOn(true);
+        }
     }
 
     @Override
@@ -86,12 +111,16 @@ public abstract class AnylineBaseActivity extends Activity
     
     @Override
     protected void onResume() {
+      // Register a listener for the sensor.
       super.onResume();
+      sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
   
     @Override
     protected void onPause() {
+      // Be sure to unregister the sensor when the activity pauses.
       super.onPause();
+      sensorManager.unregisterListener(this);
     }
 
     protected ArrayList getArrayListFromJsonArray(JSONArray jsonObject) {
@@ -106,6 +135,15 @@ public abstract class AnylineBaseActivity extends Activity
         }
         return listdata;
     }
+
+    private void showToast(String text) {
+		try {
+			notificationToast.setText(text);
+		} catch (Exception e) {
+			notificationToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+		}
+		notificationToast.show();
+	}
     
     protected String jsonForOutline(List<PointF> pointList) {
 
