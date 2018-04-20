@@ -36,6 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.hardware.SensorManager.DynamicSensorCallback;
+
 import at.nineyards.anyline.camera.AnylineViewConfig;
 import at.nineyards.anyline.camera.CameraController;
 import at.nineyards.anyline.camera.CameraOpenListener;
@@ -44,11 +51,13 @@ import at.nineyards.anyline.modules.document.DocumentResultListener;
 import at.nineyards.anyline.modules.document.DocumentResult;
 import at.nineyards.anyline.modules.document.DocumentScanView;
 import at.nineyards.anyline.util.TempFileUtil;
+import at.nineyards.anyline.camera.FlashControl;
+
 
 /**
  * Example activity for the Anyline-Document-Detection-Module
  */
-public class DocumentActivity extends AnylineBaseActivity implements CameraOpenListener {
+public class DocumentActivity extends AnylineBaseActivity implements CameraOpenListener, SensorEventListener, FlashControl {
 
 	private static final long ERROR_MESSAGE_DELAY = 2000;
 	private static final String TAG = DocumentActivity.class.getSimpleName();
@@ -63,6 +72,10 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	private long lastErrorRecieved = 0;
 	private int quality = 100;
 	private Runnable errorMessageCleanup;
+	
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private float lightValue;
 
 	private Double maxDocumentOutputResolutionWidth = null;
 	private Double maxDocumentOutputResolutionHeight = null;
@@ -72,10 +85,43 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 	private android.os.Handler handler = new android.os.Handler();
 
+	@Override
+	public final void setCameraController(CameraController cameraController) {
+		super.setCameraController(cameraController);
+	}
+	
+	@Override
+	public final void setAutoModeEnabled(boolean isEnabled) {
+		super.setAutoModeEnabled(isEnabled);
+	}
+	
+	@Override
+	public final void setFlashOnIfAuto(boolean isOn) {
+		super.setFlashOnIfAuto(isOn);
+	}
+	
+	@Override
+	public final void setMode(FlashControl.Mode mode) {
+		
+	}
+	
+	@Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+    }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        lightValue = event.values[0];
+        // Do something with this sensor data.
+    }
+	
 	 @ Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getResources().getIdentifier("activity_scan_document", "layout", getPackageName()));
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
 		// takes care of fading the error message out after some time with no error reported from the SDK
 		errorMessageCleanup = new Runnable() {
@@ -317,6 +363,9 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				}
 
 			}
+			
+			
+
 
 			 @ Override
 			public void onPreviewProcessingSuccess(AnylineImage anylineImage) {
@@ -514,6 +563,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	 @ Override
 	protected void onResume() {
 		super.onResume();
+		// Register a listener for the sensor.
+		sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 		//start the actual scanning
 		documentScanView.startScanning();
 	}
@@ -523,6 +574,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 		super.onPause();
 		//stop the scanning
 		documentScanView.cancelScanning();
+		// Be sure to unregister the sensor when the activity pauses.
+		sensorManager.unregisterListener(this);
 		//release the camera (must be called in onPause, because there are situations where
 		// it cannot be auto-detected that the camera should be released)
 		documentScanView.releaseCameraInBackground();
@@ -535,9 +588,13 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 	 @ Override
 	public void onCameraOpened(CameraController cameraController, int width, int height) {
-		super.onCameraOpened(cameraController, width, height);
 		//the camera is opened async and this is called when the opening is finished
-		//Log.d(TAG, "Camera opened successfully. Frame resolution " + width + " x " + height);
+		Log.d(TAG, "Camera opened successfully. Frame resolution " + width + " x " + height);
+        if(lightValue < 50) {
+            setCameraController(cameraController);
+            setAutoModeEnabled(true);
+            setFlashOnIfAuto(true);
+        }
 	}
 
 	 @ Override
