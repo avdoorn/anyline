@@ -97,7 +97,7 @@ public abstract class AnylineBaseActivity extends Activity
     public void onCameraOpened(CameraController cameraController, int width, int height) {
         Log.d(TAG, "Camera opened. Frame size " + width + " x " + height + ".");
         if(lightValue < 500000) {
-            Log.d(TAG, "LightSensor value: " + lightValue ".");
+            Log.d(TAG, "LightSensor value: " + lightValue);
         }
     }
 
