@@ -537,7 +537,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	public void onCameraOpened(CameraController cameraController, int width, int height) {
 		super.onCameraOpened(cameraController, width, height);
 		//the camera is opened async and this is called when the opening is finished
-		Log.d(TAG, "Camera opened successfully. Frame resolution " + width + " x " + height);
+		//Log.d(TAG, "Camera opened successfully. Frame resolution " + width + " x " + height);
 	}
 
 	 @ Override
