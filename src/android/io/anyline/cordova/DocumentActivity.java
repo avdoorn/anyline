@@ -115,7 +115,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
             triggerManualButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    stopScanning(true);
+					documentScanView.cancelScanning();
                     documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
                 }
             });
