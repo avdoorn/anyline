@@ -19,6 +19,14 @@
             android:layout_alignParentRight="true"
             android:adjustViewBounds="true"/>
      
+     
+    <ImageView
+            android:id="@+id/manual_trigger_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:adjustViewBounds="true"/>
+     
 
     <ImageView
             android:id="@+id/full_image"
