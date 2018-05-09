@@ -110,6 +110,14 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 		errorMessage = (TextView)findViewById(getResources().getIdentifier("error_message", "id", getPackageName()));
 
 		documentScanView = (DocumentScanView)findViewById(getResources().getIdentifier("document_scan_view", "id", getPackageName()));
+		triggerManualButton = (ImageView) findViewById(getResources().getIdentifier("manual_trigger_button", "id", getPackageName()));
+            triggerManualButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    stopScanning(true);
+                    documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
+                }
+            });
 		// add a camera open listener that will be called when the camera is opened or an error occurred
 		// this is optional (if not set a RuntimeException will be thrown if an error occurs)
 		documentScanView.setCameraOpenListener(this);
@@ -171,29 +179,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				}
 
 				AnylineImage transformedImage = documentResult.getResult();
-				AnylineImage fullFrame = documentResult.getFullImage();
-
-				// resize display view based on larger side of document, and display document
-				int widthDP,
-				heightDP;
-				Bitmap bmpTransformedImage = transformedImage.getBitmap();
-
-				if (bmpTransformedImage.getHeight() > bmpTransformedImage.getWidth()) {
-					widthDP = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-					heightDP = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
-					//Add a comment to this line
-
-					imageViewResult.getLayoutParams().width = widthDP;
-					imageViewResult.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-				} else {
-					widthDP = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
-					heightDP = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-
-					imageViewResult.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-					imageViewResult.getLayoutParams().height = heightDP;
-				}
-
-				imageViewResult.setImageBitmap(Bitmap.createScaledBitmap(transformedImage.getBitmap(), widthDP, heightDP, false));
 
 				/**
 				 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
@@ -224,13 +209,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 					jsonResult.put("imagePath", imageFile.getAbsolutePath());
 
-					// Save the Full Frame Image
-					//if (fullFrame != null) {
-					//	imageFile = TempFileUtil.createTempFileCheckCache(DocumentActivity.this,
-					//			UUID.randomUUID().toString(), ".jpg");
-					//	fullFrame.save(imageFile, quality);
-					//	jsonResult.put("fullImagePath", imageFile.getAbsolutePath());
-					//}
 					FileInputStream fis = new FileInputStream(imageFile);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
@@ -281,8 +259,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					 */
 
 					// Put outline and conficence to result
-					//jsonResult.put("outline", jsonForOutline(documentResult.getOutline()));
-					//jsonResult.put("confidence", documentResult.getConfidence());
 					jsonResult.put("imageData", result);
 				} 	catch(Exception e) {
 					String exceptionMessage = e.getMessage();
@@ -296,7 +272,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 				// release the images
 				transformedImage.release();
-				fullFrame.release();
 
 				Boolean cancelOnResult = true;
 
@@ -395,16 +370,117 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			}
 
 			 @ Override
-			public void onPictureCornersDetected(AnylineImage anylineImage, List < PointF > list) {
+			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > list) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
+				
+                documentScanView.transformPicture(fullFrame, corners);
 			}
 
 			 @ Override
-			public void onPictureTransformed(AnylineImage anylineImage) {
-				// this is called after a full frame image and 4 corners were passed to the SDK for
-				// transformation (e.g. when a user manually selected the corners in an image)
-				// Note: not implemented in this example
+			public void onPictureTransformed(AnylineImage transformedImage) {
+				// handle the result document images here
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+
+				/**
+				 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
+				 * keeping them in memory (e.g. setting the full frame to an ImageView)
+				 * will result in a OutOfMemoryError soon. This error is reported in {@link #onTakePictureError
+				 * (Throwable)}
+				 *
+				 * Use a DiskCache http://developer.android.com/training/displaying-bitmaps/cache-bitmap.html#disk-cache
+				 * for example
+				 *
+				 */
+				File outDir = new File(getCacheDir(), "ok");
+				outDir.mkdir();
+				// change the file ending to png if you want a png
+				JSONObject jsonResult = new JSONObject();
+				String result = new String();
+				try {
+
+					// convert the transformed image into a gray scaled image internally
+					// transformedImage.getGrayCvMat(false);
+					// get the transformed image as bitmap
+					// Bitmap bmp = transformedImage.getBitmap();
+					// save the image with quality 100 (only used for jpeg, ignored for png)
+					File imageFile = TempFileUtil.createTempFileCheckCache(DocumentActivity.this,
+							UUID.randomUUID().toString(), ".jpg");
+					transformedImage.save(imageFile, quality);
+					//showToast(getString(getResources().getIdentifier("document_image_saved_to", "string", getPackageName())) + " " + imageFile.getAbsolutePath());
+
+					jsonResult.put("imagePath", imageFile.getAbsolutePath());
+
+					FileInputStream fis = new FileInputStream(imageFile);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					Base64OutputStream base64out = new Base64OutputStream(baos, Base64.NO_WRAP);
+					byte[]buffer = new byte[1024];
+					int len = 0;
+					while ((len = fis.read(buffer)) >= 0) {
+						base64out.write(buffer, 0, len);
+					}
+					base64out.flush();
+					base64out.close();
+					/*
+					 * Why should we close Base64OutputStream before processing the data:
+					 * http://stackoverflow.com/questions/24798745/androidfiletobase64usingstreamingsometimesmissed2bytes
+					 */
+
+					byte[]data = baos.toByteArray();
+
+					// Apply contrast
+					byte contrast = (byte)10;
+					int factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+					byte byteFactor = (byte)factor;
+					int inbetween;
+					int dataCounter = 0;
+					int dataLength = data.length;
+					while (dataCounter < dataLength) {
+						inbetween = factor * (data[dataCounter] - 128) + 128;
+						data[dataCounter] = (byte)inbetween;
+						inbetween = factor * (data[dataCounter + 1] - 128) + 128;
+						data[dataCounter + 1] = (byte)inbetween;
+						inbetween = factor * (data[dataCounter + 2] - 128) + 128;
+						data[dataCounter + 2] = (byte)inbetween;
+						dataCounter += 4;
+					}
+
+					result = new String(data, "UTF-8");
+
+					baos.close();
+					fis.close();
+					/**
+					 * IMPORTANT: cache provided frames here, and release them at the end of this onResult. Because
+					 * keeping them in memory (e.g. setting the full frame to an ImageView)
+					 * will result in a OutOfMemoryError soon. This error is reported in {@link #onTakePictureError
+					 * (Throwable)}
+					 *
+					 * Use a DiskCache http://developer.android.com/training/displayingbitmaps/cachebitmap.html#diskcache
+					 * for example
+					 *
+					 */
+
+					// Put outline and conficence to result
+					jsonResult.put("imageData", result);
+				} 	catch(Exception e) {
+					String exceptionMessage = e.getMessage();
+					try {
+						jsonResult.put("imageData", "Error: "+exceptionMessage);
+
+					} catch (Exception je) {
+						Log.e(TAG, "Error while putting image data to json.", je);
+					}
+				}
+
+				// release the images
+				transformedImage.release();
+				
+				ResultReporter.onResult(jsonResult, true);
+				setResult(AnylinePlugin.RESULT_OK);
+				finish();
 			}
 
 			 @ Override
