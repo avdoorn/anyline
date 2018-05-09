@@ -104,6 +104,8 @@
 
         <resource-file src="src/android/res/values/anyline_sdk_plugin_strings.xml"
                        target="res/values/anyline_sdk_plugin_strings.xml"/>
+        <resource-file src="src/android/res/drawable/manual_button.png"
+                       target="res/drawable/manual_button.png"/>
         <resource-file src="src/android/res/values/anyline_sdk_plugin_colors.xml"
                        target="res/values/anyline_sdk_plugin_colors.xml"/>
         <resource-file src="src/android/res/values-de/anyline_sdk_plugin_strings.xml"
