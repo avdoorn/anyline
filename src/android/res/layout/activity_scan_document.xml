@@ -22,10 +22,13 @@
      
     <ImageView
             android:id="@+id/manual_trigger_button"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentBottom="true"
-            android:adjustViewBounds="true"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="100dp"
+        android:layout_alignParentBottom="true"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/manual_button"/>
      
 
     <ImageView
