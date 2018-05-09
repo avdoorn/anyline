@@ -55,6 +55,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	private DocumentScanView documentScanView;
 	private Toast notificationToast;
 	private ImageView imageViewResult;
+	private ImageView triggerManualButton;
 	private ProgressDialog progressDialog;
 	private List < PointF > lastOutline;
 	private ObjectAnimator errorMessageAnimator;
