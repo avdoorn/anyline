@@ -371,7 +371,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			}
 
 			 @ Override
-			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > list) {
+			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
 				
