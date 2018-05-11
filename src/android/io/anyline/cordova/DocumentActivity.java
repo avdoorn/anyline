@@ -383,7 +383,12 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
 				showToast("Try to crop document on corners");
-                documentScanView.transformPicture(fullFrame, corners);
+				try {
+					documentScanView.transformPicture(fullFrame, corners);
+				}	catch(Exception e) {
+					String exceptionMessage = e.getMessage();
+					
+					showToast(exceptionMessage);
 			}
 
 			 @ Override
