@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Base64InputStream;
