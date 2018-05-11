@@ -389,6 +389,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					String exceptionMessage = e.getMessage();
 					
 					showToast(exceptionMessage);
+				}
 			}
 
 			 @ Override
