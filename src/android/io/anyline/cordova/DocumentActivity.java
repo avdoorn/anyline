@@ -119,7 +119,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				triggerManualButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						showToast("Clicked");
+						showToast("Trying to find corners of document");
 						documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
 					}
 				});
@@ -381,7 +381,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
-				showToast("Corners detected");
+				showToast("Try to crop document on corners");
                 documentScanView.transformPicture(fullFrame, corners);
 			}
 
@@ -514,8 +514,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			public void onPictureTransformError(DocumentScanView.DocumentError documentError) {
 				// this is called on any error while transforming the document image from the 4 corners
 				// Note: not implemented in this example
-				
-				showErrorMessageFor(documentError);
+				showToast("ERROR WITH TRANSFORMING");
 			}
 
 		});
