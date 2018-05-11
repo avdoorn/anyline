@@ -124,7 +124,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					}
 				});
 			}
-		}, 5000);
+		}, 10000);
 		// add a camera open listener that will be called when the camera is opened or an error occurred
 		// this is optional (if not set a RuntimeException will be thrown if an error occurs)
 		documentScanView.setCameraOpenListener(this);
