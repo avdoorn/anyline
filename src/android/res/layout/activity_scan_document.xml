@@ -25,8 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/manual_button"
-            tools:layout_editor_absoluteX="100dp"
-            tools:layout_editor_absoluteY="100dp"/>
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"/>
      
 
     <ImageView

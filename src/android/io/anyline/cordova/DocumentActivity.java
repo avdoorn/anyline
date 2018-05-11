@@ -479,9 +479,24 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				// release the images
 				transformedImage.release();
 				
-				ResultReporter.onResult(jsonResult, true);
-				setResult(AnylinePlugin.RESULT_OK);
-				finish();
+				
+				Boolean cancelOnResult = true;
+
+				JSONObject jsonObject;
+				try {
+					jsonObject = new JSONObject(configJson);
+					cancelOnResult = jsonObject.getBoolean("cancelOnResult");
+				} catch (Exception e) {
+					Log.d(TAG, e.getLocalizedMessage());
+				}
+
+				if (cancelOnResult) {
+					ResultReporter.onResult(jsonResult, true);
+					setResult(AnylinePlugin.RESULT_OK);
+					finish();
+				} else {
+					ResultReporter.onResult(jsonResult, false);
+				}
 			}
 
 			 @ Override
