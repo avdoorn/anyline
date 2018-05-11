@@ -123,6 +123,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 						documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
 					}
 				});
+				triggerManualButton.setVisibility(View.VISIBLE);
 			}
 		}, 10000);
 		// add a camera open listener that will be called when the camera is opened or an error occurred
