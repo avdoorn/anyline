@@ -117,7 +117,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
                 public void onClick(View view) {
 					showToast("Clicked");
 
-					documentScanView.cancelScanning();
                     documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
                 }
             });
@@ -376,13 +375,14 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
-				
+				showToast("Corners detected");
                 documentScanView.transformPicture(fullFrame, corners);
 			}
 
 			 @ Override
 			public void onPictureTransformed(AnylineImage transformedImage) {
 				// handle the result document images here
+				showToast("Handle result");
 				if (progressDialog != null && progressDialog.isShowing()) {
 					progressDialog.dismiss();
 				}
@@ -414,7 +414,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 							UUID.randomUUID().toString(), ".jpg");
 					transformedImage.save(imageFile, quality);
 					//showToast(getString(getResources().getIdentifier("document_image_saved_to", "string", getPackageName())) + " " + imageFile.getAbsolutePath());
-
+					
+					showToast("Saved image");
 					jsonResult.put("imagePath", imageFile.getAbsolutePath());
 
 					FileInputStream fis = new FileInputStream(imageFile);
@@ -470,6 +471,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					jsonResult.put("imageData", result);
 				} 	catch(Exception e) {
 					String exceptionMessage = e.getMessage();
+					
+					showToast(exceptionMessage);
 					try {
 						jsonResult.put("imageData", "Error: "+exceptionMessage);
 
