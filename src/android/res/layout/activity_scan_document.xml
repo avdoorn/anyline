@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/manual_button"
             android:layout_alignParentBottom="true"
-            android:gravity="center_horizontal"/>
+            android:layout_centerHorizontal="true"/>
      
 
     <ImageView
