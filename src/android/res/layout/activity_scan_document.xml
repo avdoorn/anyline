@@ -27,6 +27,7 @@
             android:src="@drawable/manual_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
             android:visibility="invisible"/>
      
 
