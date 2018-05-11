@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Base64InputStream;
@@ -65,7 +64,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	private long lastErrorRecieved = 0;
 	private int quality = 100;
 	private Runnable errorMessageCleanup;
-	private Handler handler;
 
 	private Double maxDocumentOutputResolutionWidth = null;
 	private Double maxDocumentOutputResolutionHeight = null;
