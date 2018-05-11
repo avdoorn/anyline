@@ -120,6 +120,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					@Override
 					public void onClick(View view) {
 						showToast("Trying to find corners of document");
+						documentScanView.cancelScanning();
 						documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
 					}
 				});
