@@ -22,9 +22,9 @@
      
     <ImageView
             android:id="@+id/manual_trigger_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/manual_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/camera_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
