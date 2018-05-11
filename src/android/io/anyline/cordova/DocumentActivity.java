@@ -508,6 +508,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			public void onPictureTransformError(DocumentScanView.DocumentError documentError) {
 				// this is called on any error while transforming the document image from the 4 corners
 				// Note: not implemented in this example
+				
+				showErrorMessageFor(documentError);
 			}
 
 		});
