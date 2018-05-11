@@ -64,6 +64,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	private long lastErrorRecieved = 0;
 	private int quality = 100;
 	private Runnable errorMessageCleanup;
+	private Handler handler;
 
 	private Double maxDocumentOutputResolutionWidth = null;
 	private Double maxDocumentOutputResolutionHeight = null;
@@ -111,15 +112,20 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 		errorMessage = (TextView)findViewById(getResources().getIdentifier("error_message", "id", getPackageName()));
 
 		documentScanView = (DocumentScanView)findViewById(getResources().getIdentifier("document_scan_view", "id", getPackageName()));
-		triggerManualButton = (ImageView) findViewById(getResources().getIdentifier("manual_trigger_button", "id", getPackageName()));
-            triggerManualButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-					showToast("Clicked");
-
-                    documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
-                }
-            });
+		
+		handler.postDelayed(new Runnable(){
+			@Override
+			public void run(){
+				triggerManualButton = (ImageView) findViewById(getResources().getIdentifier("manual_trigger_button", "id", getPackageName()));
+				triggerManualButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						showToast("Clicked");
+						documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
+					}
+				});
+			}
+		}, 5000);
 		// add a camera open listener that will be called when the camera is opened or an error occurred
 		// this is optional (if not set a RuntimeException will be thrown if an error occurs)
 		documentScanView.setCameraOpenListener(this);
