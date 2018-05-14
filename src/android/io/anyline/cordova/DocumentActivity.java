@@ -119,9 +119,9 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				triggerManualButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						showToast("Trying to find corners of document");
+						showToast("Trying to find corners of document"showToast(;
 						try {
-							documentScanView.triggerPictureCornerDetection(); // triggers corner detection -> callback on onPictureCornersDetected
+							showToast(documentScanView.triggerPictureCornerDetection().toString()); // triggers corner detection -> callback on onPictureCornersDetected
 						} catch(Exception e) {
 							showToast(e.getMessage());
 						}
@@ -322,8 +322,6 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 			 @ Override
 			public void onPictureProcessingFailure(DocumentScanView.DocumentError documentError) {
-					showToast("onPictureProcessingFailure");
-
 				// showErrorMessageFor(documentError, true);
 				// if (progressDialog != null && progressDialog.isShowing()) {
 					// progressDialog.dismiss();
