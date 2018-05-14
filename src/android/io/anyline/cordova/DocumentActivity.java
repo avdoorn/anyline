@@ -129,7 +129,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				});
 				triggerManualButton.setVisibility(View.VISIBLE);
 			}
-		}, 10000);
+		}, 5000);
 		// add a camera open listener that will be called when the camera is opened or an error occurred
 		// this is optional (if not set a RuntimeException will be thrown if an error occurs)
 		documentScanView.setCameraOpenListener(this);
@@ -307,12 +307,14 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 			 @ Override
 			public void onPreviewProcessingSuccess(AnylineImage anylineImage) {
+					showToast("onPreviewProcessingSuccess");
 				// this is called after the preview of the document is completed, and a full picture will be
 				// processed automatically
 			}
 
 			 @ Override
 			public void onPreviewProcessingFailure(DocumentScanView.DocumentError documentError) {
+					showToast("onPreviewProcessingFailure");
 				// this is called on any error while processing the document image
 				// Note: this is called every time an error occurs in a run, so that might be quite often
 				// An error message should only be presented to the user after some time
@@ -322,6 +324,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 			 @ Override
 			public void onPictureProcessingFailure(DocumentScanView.DocumentError documentError) {
+					showToast("onPictureProcessingFailure");
 
 				// showErrorMessageFor(documentError, true);
 				// if (progressDialog != null && progressDialog.isShowing()) {
