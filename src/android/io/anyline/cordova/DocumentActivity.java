@@ -119,7 +119,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				triggerManualButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						showToast("Trying to find corners of document"showToast(;
+						showToast("Trying to find corners of document");
 						try {
 							showToast(documentScanView.triggerPictureCornerDetection().toString()); // triggers corner detection -> callback on onPictureCornersDetected
 						} catch(Exception e) {
