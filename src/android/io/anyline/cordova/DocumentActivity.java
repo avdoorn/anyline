@@ -392,7 +392,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				try {
 					String pointString = "";
 					for(PointF pof : corners) {
-						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") ";
+						pointString = pointString + "Point: (" + pof.toString() + ") ";
 					}
 					documentScanView.transformPicture(fullFrame, corners);
 				}	catch(Exception e) {
