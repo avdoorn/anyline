@@ -63,6 +63,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 	private TextView errorMessage;
 	private long lastErrorRecieved = 0;
 	private int quality = 100;
+	private boolean postProcessing = false;
 	private Runnable errorMessageCleanup;
 
 	private Double maxDocumentOutputResolutionWidth = null;
@@ -179,6 +180,8 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 		if (maxDocumentOutputResolutionWidth != null && maxDocumentOutputResolutionHeight != null) {
 			documentScanView.setMaxDocumentOutputResolution(maxDocumentOutputResolutionWidth, maxDocumentOutputResolutionHeight);
 		}
+		
+		documentScanView.setPostProcessingEnabled(this.postProcessing);
 
 		// initialize Anyline with the license key and a Listener that is called if a result is found
 		documentScanView.initAnyline(licenseKey, new DocumentResultListener() {
