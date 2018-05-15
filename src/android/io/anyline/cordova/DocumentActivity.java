@@ -403,7 +403,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			 @ Override
 			public void onPictureTransformed(AnylineImage transformedImage) {
 				// handle the result document images here
-				showToast("Handle result");
+				//showToast("Handle result");
 				if (progressDialog != null && progressDialog.isShowing()) {
 					progressDialog.dismiss();
 				}
@@ -436,7 +436,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					transformedImage.save(imageFile, quality);
 					//showToast(getString(getResources().getIdentifier("document_image_saved_to", "string", getPackageName())) + " " + imageFile.getAbsolutePath());
 					
-					showToast("Saved image");
+					//showToast("Saved image");
 					jsonResult.put("imagePath", imageFile.getAbsolutePath());
 
 					FileInputStream fis = new FileInputStream(imageFile);
