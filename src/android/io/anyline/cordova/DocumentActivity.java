@@ -272,7 +272,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 					// Put outline and conficence to result
 					jsonResult.put("imageData", result);
-					jsonResult.put("takenManual", false);
+					jsonResult.put("takenManual", "false");
 				} 	catch(Exception e) {
 					String exceptionMessage = e.getMessage();
 					try {
@@ -483,7 +483,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 
 					// Put outline and conficence to result
 					jsonResult.put("imageData", result);
-					jsonResult.put("takenManual",true);
+					jsonResult.put("takenManual", "true");
 				} 	catch(Exception e) {
 					String exceptionMessage = e.getMessage();
 					
