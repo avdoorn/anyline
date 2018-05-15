@@ -390,6 +390,10 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				// Note: not implemented in this example
 				showToast("Trying to crop document on corners");
 				try {
+					String pointString = "";
+					for(PointF pof : corners) {
+						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") ";
+					}
 					documentScanView.transformPicture(fullFrame, corners);
 				}	catch(Exception e) {
 					showToast(e.getMessage());
