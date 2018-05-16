@@ -390,10 +390,10 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					PointF rightBottom = corners.get(1);
 					PointF rightTop = corners.get(2);
 					PointF leftTop = corners.get(3);
-					return leftBottom.equals(new Float(0.0), new Float(0.0)) &&
-						rightBottom.equals(new Float(720.0),new Float(0.0)) &&
-						rightTop.equals(new Float(720.0),new Float(1080.0)) &&
-						leftTop.equals(new Float(0.0),new Float(1080.0));
+					return leftBottom.x == new Float(0.0) && leftBottom.y == new Float(0.0) &&
+						rightBottom.x == new Float(0720.00) && rightBottom.y == new Float(0.0) &&
+						rightTop.x == new Float(720.0) && rightTop.y == new Float(1080.0) &&
+						leftTop.x == new Float(0.0) && leftTop.y == new Float(1080.0);
 			}
 			
 			private List<PointF> getMinCropping() {
