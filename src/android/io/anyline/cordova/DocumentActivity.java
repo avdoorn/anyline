@@ -426,7 +426,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					for(PointF pof : corners) {
 						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
 					}
-					pointString = pointString + "\n\nPoints:"
+					pointString = pointString + "\n\nPoints:";
 					PointF pof = firstCorners.get(0);
 						pointString = pointString + "Point: 0(" + pof.x + "," + pof.y + ") \n";
 					PointF pof = firstCorners.get(1);
