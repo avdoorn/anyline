@@ -411,13 +411,16 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			}
 
 			 @ Override
-			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
+			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > firstCorners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
+				List<PointF> corners = new ArrayList<PointF>();
 				showToast("Trying to crop document on corners");				
 				try {
-					if(areCornersOutterCorners(corners)) {
+					if(areCornersOutterCorners(firstCorners)) {
 						corners = getMinCropping();
+					} else {
+						corners = firstCorners;
 					}
 					String pointString = "";
 					for(PointF pof : corners) {
