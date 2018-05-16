@@ -389,10 +389,15 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
 				showToast("Trying to crop document on corners");
+				
+				DisplayMetrics displayMetrics = new DisplayMetrics();
+				((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+				int height = displayMetrics.heightPixels;
+				int width = displayMetrics.widthPixels;
 				try {
-					String pointString = "";
+					String pointString = "Height: " + height + " Width: " + width + "\n";
 					for(PointF pof : corners) {
-						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") ";
+						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
 					}
 					showToast(pointString);
 					documentScanView.transformPicture(fullFrame, corners);
