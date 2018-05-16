@@ -401,7 +401,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 						outterLeftTop == leftTop;
 			}
 			
-			private List<PointF> getMinCropping(corners) {
+			private List<PointF> getMinCropping(List<PointF> corners) {
 				// Always crop 10% edges from image 
 				corners.clear();
 				PointF minLeftBottom = new PointF(72,108);
