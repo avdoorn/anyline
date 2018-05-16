@@ -385,20 +385,15 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				throw new RuntimeException(throwable);
 			}
 			
-			private Boolean areCornersOutterCorners(List<PointF> corners) {
-					PointF outterLeftBottom = new PointF(0,0);
-					PointF outterRightBottom = new PointF(720,0);
-					PointF outterRightTop = new PointF(720,1080);
-					PointF outterLeftTop = new PointF(0,1080);
-					
+			private Boolean areCornersOutterCorners(List<PointF> corners) {					
 					PointF leftBottom = corners.get(0);
 					PointF rightBottom = corners.get(1);
 					PointF rightTop = corners.get(2);
 					PointF leftTop = corners.get(3);
-					return outterLeftBottom == leftBottom &&
-						outterRightBottom == rightBottom &&
-						outterRightTop == rightTop &&
-						outterLeftTop == leftTop;
+					return leftBottom.equals(0.0,0.0) &&
+						rightBottom.equals(720.0,0.0) &&
+						rightTop.equals(720.0,1080.0) &&
+						leftTop.equals(0.0,1080.0);
 			}
 			
 			private List<PointF> getMinCropping(List<PointF> corners) {
