@@ -411,31 +411,31 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 			}
 
 			 @ Override
-			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > firstCorners) {
+			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
-				List<PointF> corners = new ArrayList<PointF>();
+				//List<PointF> corners = new ArrayList<PointF>();
 				showToast("Trying to crop document on corners");				
 				try {
-					if(areCornersOutterCorners(firstCorners)) {
-						corners = getMinCropping();
-					} else {
-						corners = firstCorners;
-					}
-					String pointString = "PointLoop:";
-					for(PointF pof : corners) {
-						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
-					}
-					pointString = pointString + "\n\nPoints:";
-					PointF pof = firstCorners.get(0);
-						pointString = pointString + "Point: 0(" + pof.x + "," + pof.y + ") \n";
-					pof = firstCorners.get(1);
-						pointString = pointString + "Point: 1(" + pof.x + "," + pof.y + ") \n";
-					pof = firstCorners.get(2);
-						pointString = pointString + "Point: 2(" + pof.x + "," + pof.y + ") \n";
-					pof = firstCorners.get(3);
-						pointString = pointString + "Point: 3(" + pof.x + "," + pof.y + ") \n";
-					showToast(pointString);
+					//if(areCornersOutterCorners(firstCorners)) {
+					//	corners = getMinCropping();
+					//} else {
+					//	corners = firstCorners;
+					//}
+					//String pointString = "PointLoop:";
+					//for(PointF pof : corners) {
+					//	pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
+					//}
+					//pointString = pointString + "\n\nPoints:";
+					//PointF pof = firstCorners.get(0);
+					//	pointString = pointString + "Point: 0(" + pof.x + "," + pof.y + ") \n";
+					//pof = firstCorners.get(1);
+					//	pointString = pointString + "Point: 1(" + pof.x + "," + pof.y + ") \n";
+					//pof = firstCorners.get(2);
+					//	pointString = pointString + "Point: 2(" + pof.x + "," + pof.y + ") \n";
+					//pof = firstCorners.get(3);
+					//	pointString = pointString + "Point: 3(" + pof.x + "," + pof.y + ") \n";
+					//showToast(pointString);
 					documentScanView.transformPicture(fullFrame, corners);
 				}	catch(Exception e) {
 					showToast(e.getMessage());
