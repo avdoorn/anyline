@@ -424,7 +424,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 					if(areCornersOutterCorners(corners)) {
 						corners = getMinCropping(corners);
 					}
-					String pointString = "Height: " + height + " Width: " + width + "\n";
+					String pointString = "";
 					for(PointF pof : corners) {
 						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
 					}
