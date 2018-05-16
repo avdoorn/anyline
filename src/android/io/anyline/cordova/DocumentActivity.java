@@ -396,13 +396,13 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 						leftTop.equals(new Float(0.0),new Float(1080.0));
 			}
 			
-			private List<PointF> getMinCropping(List<PointF> corners) {
+			private List<PointF> getMinCropping() {
 				// Always crop 10% edges from image 
-				corners.clear();
-				PointF minLeftBottom = new PointF(72,108);
-				PointF minRightBottom = new PointF(648,108);
-				PointF minRightTop = new PointF(648,972);
-				PointF minLeftTop = new PointF(72,972);
+				List<PointF> corners = new ArrayList<PointF>(); 
+				PointF minLeftBottom = new PointF(new Float(72.0), new Float(108.0));
+				PointF minRightBottom = new PointF(new Float(648.0), new Float(108.0));
+				PointF minRightTop = new PointF(new Float(648.0), new Float(972.0));
+				PointF minLeftTop = new PointF(new Float(72.0), new Float(972.0));
 				corners.add(minLeftBottom);
 				corners.add(minRightBottom);
 				corners.add(minRightTop);
@@ -417,7 +417,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				showToast("Trying to crop document on corners");				
 				try {
 					if(areCornersOutterCorners(corners)) {
-						corners = getMinCropping(corners);
+						corners = getMinCropping();
 					}
 					String pointString = "";
 					for(PointF pof : corners) {
