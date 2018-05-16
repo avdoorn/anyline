@@ -384,18 +384,46 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				// OutOfMemoryError)
 				throw new RuntimeException(throwable);
 			}
+			
+			private Boolean areCornersOutterCorners(List<PointF> corners) {
+					PointF outterLeftBottom = new PointF(0,0);
+					PointF outterRightBottom = new PointF(720,0);
+					PointF outterRightTop = new PointF(720,1080);
+					PointF outterLeftTop = new PointF(0,1080);
+					
+					PointF leftBottom = corners.get(0);
+					PointF rightBottom = corners.get(1);
+					PointF rightTop = corners.get(2);
+					PointF leftTop = corners.get(3);
+					return outterLeftBottom == leftBottom &&
+						outterRightBottom == rightBottom &&
+						outterRightTop == rightTop &&
+						outterLeftTop == leftTop;
+			}
+			
+			private List<PointF> getMinCropping(corners) {
+				// Always crop 10% edges from image 
+				corners.clear();
+				PointF minLeftBottom = new PointF(72,108);
+				PointF minRightBottom = new PointF(648,108);
+				PointF minRightTop = new PointF(648,972);
+				PointF minLeftTop = new PointF(72,972);
+				corners.add(minLeftBottom);
+				corners.add(minRightBottom);
+				corners.add(minRightTop);
+				corners.add(minLeftTop);
+				return corners;
+			}
 
 			 @ Override
 			public void onPictureCornersDetected(AnylineImage fullFrame, List < PointF > corners) {
 				// this is called after manual corner detection was requested
 				// Note: not implemented in this example
-				showToast("Trying to crop document on corners");
-				
-				DisplayMetrics displayMetrics = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-				int height = displayMetrics.heightPixels;
-				int width = displayMetrics.widthPixels;
+				showToast("Trying to crop document on corners");				
 				try {
+					if(areCornersOutterCorners(corners)) {
+						corners = getMinCropping(corners);
+					}
 					String pointString = "Height: " + height + " Width: " + width + "\n";
 					for(PointF pof : corners) {
 						pointString = pointString + "Point: (" + pof.x + "," + pof.y + ") \n";
