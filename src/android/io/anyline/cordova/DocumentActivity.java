@@ -392,7 +392,7 @@ public class DocumentActivity extends AnylineBaseActivity implements CameraOpenL
 				showToast("Trying to crop document on corners");
 				
 				DisplayMetrics displayMetrics = new DisplayMetrics();
-				((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+				getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 				int height = displayMetrics.heightPixels;
 				int width = displayMetrics.widthPixels;
 				try {
